@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id='bgverify.1' lang='en' version="5.0" xmlns="http://docbook.org/ns/docbook">
+<refentryinfo><releaseinfo>2.6</releaseinfo></refentryinfo>
+<refmeta>
+<refentrytitle>BGVERIFY</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class='source'>Big Grep</refmiscinfo>
+<refmiscinfo class='manual'>User Manuals</refmiscinfo>
+</refmeta>
+<refnamediv id='bgverifyname'>
+<refname>bgverify</refname>
+<refpurpose>Verify Biggrep search candidates.  bgverify takes a list of files on stdin, the result of a bgverify, and verifies that the STR patterns (binary hex values) are really present and not false positives.</refpurpose>
+</refnamediv>
+<!-- body begins here -->
+<refsynopsisdiv id='bgverifysynopsis'>
+<cmdsynopsis>
+	<command>bgverify</command>
+	<arg choice='opt'><replaceable>options</replaceable></arg>
+	<arg choice='req' rep='repeat'><replaceable>STR</replaceable></arg>
+    <sbr/>
+</cmdsynopsis>
+</refsynopsisdiv>
+<refsect1 id='bgverifyoptions'><title>OPTIONS</title>
+<variablelist remap='IP'>
+  <varlistentry>
+      <term><option>-o</option>/<option>--offsets</option></term>
+    <listitem>
+      <para>Show all hits w/ locations instead of just a pass/fail match answer.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-V</option>/<option>--verbose</option></term>
+    <listitem>
+      <para>Show some additional info while working.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-D</option>/<option>--debug</option></term>
+    <listitem>
+      <para>Show diagnostic information.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-h</option>/<option>--help</option></term>
+    <listitem>
+      <para>Show this help message.</para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+</refentry>
+
+

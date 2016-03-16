@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id='bgindex.1' lang='en' version="5.0" xmlns="http://docbook.org/ns/docbook">
+<refentryinfo><releaseinfo>2.6</releaseinfo></refentryinfo>
+<refmeta>
+<refentrytitle>BGINDEX</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class='source'>Big Grep</refmiscinfo>
+<refmiscinfo class='manual'>User Manuals</refmiscinfo>
+</refmeta>
+<refnamediv id='bgindexname'>
+<refname>bgindex</refname>
+<refpurpose>bgindex reads a list of files on stdin to process, produces an N-gram inverted index.</refpurpose>
+</refnamediv>
+<!-- body begins here -->
+<refsynopsisdiv id='bgindexsynopsis'>
+<cmdsynopsis>
+	<command>bgindex</command>
+	<arg choice='opt'><replaceable>options</replaceable></arg>
+    <sbr/>
+</cmdsynopsis>
+</refsynopsisdiv>
+<refsect1 id='bgindexoptions'><title>OPTIONS</title>
+<variablelist remap='IP'>
+  <varlistentry>
+    <term><option>-n</option>/<option>--ngram</option> <replaceable>N</replaceable></term>
+    <listitem>
+      <para>Define N for the N-gram (3 or 4, 3 is default)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-H</option>/<option>--hint-type</option> <replaceable>N</replaceable></term>
+    <listitem>
+      <para>Specify hint type (0-2, default 0 for n==4, 1 for n==3 )</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-b</option>/<option>--blocksize</option> <replaceable>SIZE</replaceable></term>
+    <listitem>
+      <para>PFOR encoding blocksize. (multiple of 8, default 32)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-e</option>/<option>--exceptions</option> <replaceable>NUM</replaceable></term>
+    <listitem>
+      <para>PFOR encoding max exceptions per block. (default 2)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-m</option>/<option>--minimum</option> <replaceable>NUM</replaceable></term>
+    <listitem>
+      <para>PFOR encoding minimum number of entries to consider PFOR. (default 4)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-M</option>/<option>--max-unique-ngrams</option> <replaceable>N</replaceable></term>
+    <listitem>
+      <para>Maximum number of unique n-grams allowed per file.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-p</option>/<option>--prefix</option> <replaceable>STR</replaceable></term>
+    <listitem>
+      <para>A prefix for the index file(s) (directory and/or partial filename).</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-s</option>/<option>--stats</option> <replaceable>FILE</replaceable></term>
+    <listitem>
+      <para>A file to save some statistics to (not implemented yet).</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-S</option>/<option>--sthreads</option> <replaceable>NUM</replaceable></term>
+    <listitem>
+      <para>Number of threads to use for shingling. (default 4)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-C</option>/<option>--cthreads</option> <replaceable>NUM</replaceable></term>
+    <listitem>
+      <para>Number of threads to use for compression. (default 5)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-v</option>/<option>--verbose</option></term>
+    <listitem>
+      <para>Show some additional info while working.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-d</option>/<option>--debug</option></term>
+    <listitem>
+      <para>Show more diagnostic information.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-t</option>/<option>--trace</option></term>
+    <listitem>
+      <para>Show WAY TOO MUCH diagnostics (if compiled in).</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-h</option>/<option>--help</option></term>
+    <listitem>
+      <para>Show this help.</para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+</refentry>
+

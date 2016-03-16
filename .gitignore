@@ -1,0 +1,17 @@
+# if these symlinks are here, ignore them:
+poco
+boost
+# and I often make a test install dir here
+inst
+# emacs backup files too:
+*~
+# oh, and the generated executables:
+bgindex
+bgparse
+bgverify
+VarByteTest
+PFORTest
+StrFormatTest
+# and any packages generated:
+*.rpm
+*.deb

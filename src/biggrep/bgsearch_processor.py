@@ -1,0 +1,21 @@
+# BigGrep
+#
+# @license:   GPL and Gov't Purpose, see LICENSE.txt for details
+# @copyright: 2013 by Carnegie Mellon University
+# @author:    Matt Coates <mc-contact@cert.org>
+import jobdispatch
+import subprocess
+import logging
+import signal
+import bgsearch
+import bgsearch_jobmanager
+
+logger = logging.getLogger(__name__)
+
+#(search,[search,term],path/to/index.bgi)
+class BgSearchProcessor(jobdispatch.Processor):
+
+    def do(self):
+        j=self._startJob()
+        (_,results,duration)=bgsearch.parse(j.terms,j.input,logger,self.verbose,self.debug)
+        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='searchdone',terms=j.terms,result_tuples=results,count=0,duration=duration))

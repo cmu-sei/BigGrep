@@ -1,0 +1,49 @@
+Single file binary index format is:
+
+  +---------------------------+
+  | Header                    |
+  | (fixed size)              |
+  +---------------------------+
+  | N-Gram Hints list         |
+  | (fixed size)              |
+  +---------------------------+
+  | N-Gram to File ID lists   |
+  | (variable size)           |
+  +---------------------------+
+  | File to ID map            |
+  | (variable size)           |
+  +---------------------------+
+
+  Header (v1 28 bytes, v2 29 bytes):
+    8 bytes: magic number ('BIGGREP\n')
+    2 bytes: file fmt version number (major,minor)
+      (2.0 for v1, 2.1 for v2)
+    1 byte: N (the value 3 or 4)
+    1 byte: type of Hints List (0 = last byte trimmed, 1 = last nybble
+      trimmed, 2 = no trimming, added in index version 2.1)
+    1 bytes: size of PFOR block (1 byte should suffice, shouldn't go over 256)
+    4 bytes: # of unique N-Grams in the index
+    4 bytes: # of files indexed
+    8 bytes: 64bit offset in file for the file to id map
+  
+  N-Gram Hints List (8*(2^(8*(N-1))) bytes, so 128MB for N=4 or 512KB for N=3):
+    2^(8*(N-1)) entries of 8 byte values for the 64bit file offset to the
+    ngrams that start with the same N-1 bytes (to get in the ballpark, only
+    have to search a max of 256 entries).
+
+    Note that that was the "original" ("type 0") version, but as of index
+    version 2.1 there can now be multiple types of Hints Lists with varying
+    sizes based on the type and the value of N (see new byte in header for
+    which one is in use).
+
+  N-Gram to File ID list (variable size due to compression techniques), each
+  entry is:
+    *** N bytes: the current N-Gram *** not any more!
+    S bytes: size of the data that follows (to skip if this isn't the ngram
+      you are looking for), VarByte encoded, 0 for "missing" n-grams,
+      otherwise the following is also present:
+    1 byte: metadata about the encoding, high order bit 1 == PFOR used, 0 ==
+      VarByte (other bits may be added later for other formats, etc)
+    I bytes: VarByte encoded 1st ID
+    C bytes: the rest of the IDs in Delta format (starting w/ the first ID
+      value) compressed via PFOR or VarByte (see the metadata byte above)

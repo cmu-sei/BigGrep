@@ -1,0 +1,37 @@
+NOTICE: THIS SOFTWARE (BigGrep) IS PROVIDED PURSUANT TO A GOVERNMENT PURPOSE RIGHTS
+LICENSE (see below) AND THE GPLv2 (see GPL.txt)
+
+-----------------------------------------------------------------------------------------------------------------------
+GOVERNMENT PURPOSE RIGHTS
+CONTRACT NO.
+
+FA 8721-05-C-0003
+
+CONTRACTOR NAME
+Carnegie Mellon University
+
+CONTRACTOR ADDRESS
+4500 Fifth Avenue
+Pittsburgh, PA 15213
+
+EXPIRATION DATE
+Five years from date of delivery of code and its accompanying documentation.
+
+The Government's rights to use, modify, reproduce, release, perform, display, or disclose these technical data are restricted by paragraph (b)(2) of the Rights in Technical Data-Noncommercial Items clause contained in the above identified contract.  No restrictions apply after the expiration date shown above. Any reproduction of technical data or portions thereof marked with this legend must also reproduce the markings.
+
+-----------------------------------------------------------------------------------------------------------------------
+Copyright 2011-2016 Carnegie Mellon University.
+
+This software was created in the performance of Federal Government Contract Number FA 8721-05-C-0003 with Carnegie Mellon University.  The Government of the United States has a royalty-free government-purpose license under DFAR 252.227-7013.  
+
+THE SOFTWARE IS PROVIDED ON AN “AS IS” BASIS, AND CARNEGIE MELLON DISCLAIMS ANY AND ALL IMPLIED WARRANTIES (INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, AND/OR NON-INFRINGEMENT).  
+
+To the extent a recipient of this software is not entitled to use it pursuant to the Government purpose license mentioned above, recipient must request permission for use from:
+Carnegie Mellon University
+Software Engineering Institute
+4500 Fifth Avenue
+Pittsburgh, PA 15213, USA
+Attention: Permission Team
+Email: permission@cmu.edu
+
+DM-0001480

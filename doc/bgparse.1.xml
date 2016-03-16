@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id='bgparse.1' lang='en' version="5.0" xmlns="http://docbook.org/ns/docbook">
+<refentryinfo><releaseinfo>2.6</releaseinfo></refentryinfo>
+<refmeta>
+<refentrytitle>BGPARSE</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class='source'>Big Grep</refmiscinfo>
+<refmiscinfo class='manual'>User Manuals</refmiscinfo>
+</refmeta>
+<refnamediv id='bgparsename'>
+<refname>bgparse</refname>
+<refpurpose>bgparse takes an index file and can perform various operations on it, depending on options picked.</refpurpose>
+</refnamediv>
+<!-- body begins here -->
+<refsynopsisdiv id='bgparsesynopsis'>
+<cmdsynopsis>
+	<command>bgparse</command>
+	<arg choice='opt'><replaceable>options</replaceable></arg>
+	<arg choice='req'><replaceable>IDXFILE.BGI</replaceable></arg>
+    <sbr/>
+</cmdsynopsis>
+</refsynopsisdiv>
+<refsect1 id='bgparseoptions'><title>OPTIONS</title>
+<variablelist remap='IP'>
+  <varlistentry>
+      <term><option>-s</option>/<option>--search</option> <replaceable>HEXSTR</replaceable></term>
+    <listitem>
+      <para>Search for the candidate file ids for this ascii encoded binary string. (can have multiple -s options)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-S</option>/<option>--stats</option></term>
+    <listitem>
+      <para>Dumps the distribution of file ids and info about PFOR/VarByte compression per n-gram.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-V</option>/<option>--verbose</option></term>
+    <listitem>
+      <para>Show some additional info while working.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-d</option>/<option>--debug</option></term>
+    <listitem>
+      <para>Show diagnostic information.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+      <term><option>-h</option>/<option>--help</option></term>
+    <listitem>
+      <para>Show this help message.</para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+</refentry>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry lang="en" id="biggrep.conf.5" version="5.0" xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+    <authorgroup>
+      <author>
+        <personname>
+          <firstname>Matt</firstname>
+          <surname>Coates</surname>
+        </personname>
+        <email>mc-contact@cert.org</email>
+        <affiliation>
+          <org>
+            <orgname>Carnegie Mellon University</orgname>
+          </org>
+        </affiliation>
+      </author>
+    </authorgroup>
+  </info>
+  <refentryinfo><releaseinfo>2.6</releaseinfo></refentryinfo>
+  <refmeta>
+    <refentrytitle>biggrep.conf</refentrytitle>
+    <manvolnum>5</manvolnum>
+    <refmiscinfo class='source'>Big Grep</refmiscinfo>
+    <refmiscinfo class='manual'>User Manuals</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>biggrep.conf</refname>
+    <refpurpose>Configuration file for bgsearch default options.</refpurpose>
+  </refnamediv>
+  <refsect1>
+    <title>Description</title>
+    <para>
+    <filename>/etc/biggrep/biggrep.conf</filename> contains settings
+    that override defaults for bgsearch.  All long-form options for
+    bgssearch (see <citerefentry><refentrytitle>bgseaarch</refentrytitle><manvolnum>1</manvolnum></citerefentry>)are supported.  This
+    man page describes the most useful options for inclusion in this
+    file.</para>
+  </refsect1>
+  <refsect1>
+    <title>File Format</title>
+    <para>The general format of this file consists of key=value
+    pairs. Only one key=value pair may be present on a line, and
+    the value must be separated from the key by a '=' character.
+    For keys that require no value, listing the key alone (without
+    a '=' character) will set that value to true. All long-form
+    options for bgssearch (see <citerefentry><refentrytitle>bgseaarch</refentrytitle><manvolnum>1</manvolnum></citerefentry>)are
+    supported. Lines beginning with the '#' character are ignored.</para>
+    <variablelist>
+      <varlistentry>
+        <term><option>directory</option>=<replaceable><filename class="directory">DIR</filename></replaceable></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='directorydesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>recursive</option></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='recursivedesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>no-metadata</option></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='nometadesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>verify</option></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='verifydesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>limit</option>=<replaceable>NUM</replaceable></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='limitdesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>numprocs</option>=<replaceable>NUM</replaceable></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='numprocsdesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>banner</option>=<replaceable><filename class="directory">PATH</filename></replaceable></term>
+        <listitem>
+          <para>
+            <xi:include href="bgsearch.1.xml" xpointer="xpointer(//*[@id='bannerdesc']/node())"/>
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1 id='biggrepexamples'>
+    <title>EXAMPLES</title>
+    <example>
+      <title>Example biggrep configuration file:</title>
+      <programlisting>
+directory=/data/biggrep/indexes
+banner=/etc/biggrep/usage-warning.txt
+</programlisting>
+    </example>
+  </refsect1>
+</refentry>
