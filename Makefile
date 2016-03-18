@@ -145,17 +145,21 @@ install:	all
 	$(INSTALL) -D src/bg-extract-or-replace-fileids.py $(DESTDIR)$(bindir)/bg-extract-or-replace-fileids.py
 	# Ubuntu install cmd will work with wildcards, but RedHat won't, so
 	# let's improvise:
+	$(MKDIR) $(DESTDIR)$(man1dir)
+	$(MKDIR) $(DESTDIR)$(man5dir)
 	for f in doc/*.1.gz; do $(INSTALL) -D $$f -t $(DESTDIR)$(man1dir)/. ;done
 	for f in doc/*.5.gz; do $(INSTALL) -D $$f -t $(DESTDIR)$(man5dir)/. ;done
 	$(INSTALL) -D LICENSE.txt $(DESTDIR)$(docdir)/LICENSE.txt
 	$(INSTALL) -D GPL.txt $(DESTDIR)$(docdir)/GPL.txt
 	$(INSTALL) -D README.md $(DESTDIR)$(docdir)/README.md
+	$(MKDIR) $(DESTDIR)$(docdir)
 	for f in doc/*.pdf doc/*.txt; do $(INSTALL) -D $$f -t $(DESTDIR)$(docdir)/. ;done
 	$(INSTALL) -D src/biggrep/__init__.py $(DESTDIR)$(py_site_packages)/biggrep/__init__.py
 	$(INSTALL) -D src/biggrep/bgsearch.py $(DESTDIR)$(py_site_packages)/biggrep/bgsearch.py
 	$(INSTALL) -D src/biggrep/bgsearch_jobmanager.py $(DESTDIR)$(py_site_packages)/biggrep/bgsearch_jobmanager.py
 	$(INSTALL) -D src/biggrep/bgsearch_processor.py $(DESTDIR)$(py_site_packages)/biggrep/bgsearch_processor.py
 	$(INSTALL) -D src/biggrep/bgverify_processor.py $(DESTDIR)$(py_site_packages)/biggrep/bgverify_processor.py
+	$(MKDIR) $(DESTDIR)$(py_site_packages)/jobdispatch
 	for f in src/jobdispatch/*.py; do $(INSTALL) -D $$f -t $(DESTDIR)$(py_site_packages)/jobdispatch/. ;done
 	$(INSTALL) -D conf/biggrep/biggrep.conf $(DESTDIR)$(etcdir)/biggrep/biggrep.conf
 
