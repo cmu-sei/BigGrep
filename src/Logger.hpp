@@ -1,4 +1,4 @@
-// Copyright 2011-2016 Carnegie Mellon University.  See LICENSE file for terms.
+// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
 //
 // File:
 //   Logger.hpp
@@ -113,7 +113,7 @@ public:
       // should probably lock here for some minimal thread safety while
       // writing to the stream:
       boost::lock_guard<boost::mutex> guard(mtx);
-      (*theStream) << theLogPrefix 
+      (*theStream) << theLogPrefix
                    << ts
                    << tid
                    << LevelStrings[level] << ": ";
@@ -267,7 +267,7 @@ public:
     }
     return theLogger;
   }
-    
+
 private:
   // since this is effectively a singleton, these member vars are all
   // effectively static:
@@ -361,7 +361,7 @@ private:
 
 };
 
-// macro version, usage like so: LOG(Logger::WARNING) << "Hm...something looks suspicious"; 
+// macro version, usage like so: LOG(Logger::WARNING) << "Hm...something looks suspicious";
 #if 0
 #define LOG(level) \
   if (level < Logger::logger()->getLoggerLevel()) ; \

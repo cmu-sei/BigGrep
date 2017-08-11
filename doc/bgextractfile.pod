@@ -1,0 +1,64 @@
+=pod
+
+=head1 NAME
+
+B<bgextractfile> - bgextractfile reads a list of files on stdin and can remove or replace
+[purged] files within the index. This tool is useful when a file 
+is no longer available for search results or when information 
+related to the file has changed.
+
+=head1 SYNOPSIS
+
+   bgextractfile [options] {IDXFILE.BGI}
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-x/--extract> I<FILE>
+
+Search for the given file and remove it from the index map. 
+Alternatively, a list of files can be provided to stdin.
+
+=item B<-r/--replace> I<STRING>
+
+Replace the files with the given STRING.  This also replaces any metadata 
+stored with the file path.
+
+=item B<-v/--verbose>
+
+Show some additional info while working.
+
+=item B<-d/--debug>
+
+Show diagnostic information.
+
+=item B<-h/--help>
+
+Show this help message.
+
+=item B<-V/--version>
+
+Show version information
+
+=back
+
+=head1 EXAMPLES
+
+
+=head1 KNOWN ISSUES
+
+Bug reports and feature requests may be posted at
+E<lt>http://github.com/cmu-sei/BigGrep/issuesE<gt>
+
+=head1 AUTHORS
+
+Emily Sarneso
+E<lt>http://www.cert.org/E<gt>
+
+=head1 SEE ALSO
+
+B<bgsearch(1)>, B<bgindex(1)>, B<bgverify(1)>, B<bgparse(1)>, B<biggrep.conf(5)>
+
+=cut
+

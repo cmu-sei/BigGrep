@@ -1,8 +1,8 @@
 # BigGrep
 #
-# @license:   GPL and Gov't Purpose, see LICENSE.txt for details
-# @copyright: 2013 by Carnegie Mellon University
-# @author:    Matt Coates <mc-contact@cert.org>
+# @license:   GPL and Govt't Purpose, see LICENSE.txt for details
+# @copyright: 2013-2017 by Carnegie Mellon University
+# @author:    Matt Coates <mc-help@cert.org>
 import jobdispatch
 import subprocess
 import logging
@@ -17,5 +17,5 @@ class BgSearchProcessor(jobdispatch.Processor):
 
     def do(self):
         j=self._startJob()
-        (_,results,duration)=bgsearch.parse(j.terms,j.input,logger,self.verbose,self.debug)
-        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='searchdone',terms=j.terms,result_tuples=results,count=0,duration=duration))
+        (_,results,duration,num_files)=bgsearch.parse(j.terms,j.input,logger,self.verbose,self.debug, self.metrics)
+        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='searchdone',terms=j.terms,result_tuples=results,count=0,duration=duration,num_files=num_files,input=j.input))

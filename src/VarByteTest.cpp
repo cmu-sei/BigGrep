@@ -1,8 +1,7 @@
-// Copyright 2011-2016 Carnegie Mellon University.  See LICENSE file for terms.
-
+// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
 #include <iostream>
 
-#define __STDC_LIMIT_MACROS // I have to define this to get UINT32_MAX because of the ISO C99 standard?
+#define __STDC_LIMIT_MACROS // I have to define this to get UINT32_MAX because of the ISO C99 standard?  WTF?
 #define __STDC_CONSTANT_MACROS // ustl wants this
 #include <stdint.h>
 

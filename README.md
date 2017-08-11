@@ -5,48 +5,41 @@ a probabalistic N-gram based approach to balance index size and search speed.
 
 ## Quickstart
 
-Here's a quick & dirty intro to building, assuming you have Boost installed on
-your system (any version >= 1.41 is probably fine, and it should be available
-in most package management systems) something like this should work (if your
-system has a recent Poco in package form you could install that too instead of
-building it like I show here):
+BigGrep requires Boost version 1.48 or later. Boost should be available
+in most package management systems. Build and install Boost before 
+building BigGrep.  To use the Boost lockfree queue, version 1.53 or greater
+should be installed.  This may or may not give you a performance boost
+when indexing. 
+
+bgsearch requires jobdispatch, a python package that is included and installed
+automatically with biggrep
 
 ```
-mkdir build  
-cd build  
-wget http://pocoproject.org/releases/poco-1.6.1/poco-1.6.1.tar.gz  
-tar xvf poco-1.6.1.tar.gz  
-cd poco-1.6.1  
-./configure --prefix=`/bin/pwd`/inst --static --shared  
-make -j8 && make install  
-cd ..  
 git clone https://github.com/cmu-sei/BigGrep.git  
 cd BigGrep  
-ln -s ../poco-1.6.1/inst ./poco  
-make prefix=`/bin/pwd`/inst -j8 install  
+./autogen.sh
+./configure
+make
+make install
 ```
-
-Note that the above worked for me on my Ubuntu 15.10 development workstation
-and in a CentOS 7.2 VM.
 
 Now let's make a couple of test indexes out of some Windows EXE files:
 
 ```
 mkdir /tmp/bgi  
-ls -1 /some/test/files/*.exe | ./inst/bin/bgindex -p /tmp/bgi/testidx1 -v  
-ls -1 /some/more/test/files/*.exe | ./inst/bin/bgindex -p /tmp/bgi/testidx2 -v  
+ls -1 /some/test/files/*.exe | bgindex -p /tmp/bgi/testidx1 -v  
+ls -1 /some/more/test/files/*.exe | bgindex -p /tmp/bgi/testidx2 -v  
 ```
 
 And now that we have executables and test indexes, here's some sample search
 usage with verification (in this case, searching for a typical function entry
-point byte sequence, not overly intersting but shows how simple it is to look
-for the existance of an abitrary byte sequence) using the two different
-included bgsearch python scripts:
+point byte sequence, not overly interesting but shows how simple it is to look
+for the existence of an abitrary byte sequence) using bgsearch:
 
 ```
-./inst/bin/bgsearch_old.py -d /tmp/bgi/ -v 8bff558bec  
-./inst/bin/bgsearch_old.py -d /tmp/bgi/ -v program  
-env PYTHONUSERBASE=`/bin/pwd`/inst/usr PATH=$PATH:`/bin/pwd`/inst/bin ./inst/bin/bgsearch -d /tmp/bgi/ -v 8bff558bec  
+bgsearch -d /tmp/bgi/ -v 8bff558bec  
+bgsearch -d /tmp/bgi/ -v program  
+
 ```
 
 ## More Info
@@ -81,9 +74,13 @@ whitepaper was written, such as:
     that fill up a large portion of the 3-gram space, making them frequently
     appear as false positives in the candidate searches with 3-gram indexes)
     we generate 4-gram indexes and use 3-grams for the rest of them.
+    By using the -O and -m options in bgindex, a file can be rejected from 
+    a 3-gram index if it fills a large portion of the 3-gram space. By using
+    the -O option, bgindex will write the file path to the file given to -O 
+    and you can then generate 4-gram indexes for the denser files.
   - The current search code can also filter on metadata values to further trim
-    down the candidate list before verification.  The man pages (Docbook
-    format in repo) give details on that.
+    down the candidate list before verification.  The man pages
+     give details on that.
 
 ## Major Components
 
@@ -97,53 +94,47 @@ A quick overview of the various components (see the docs and source for more inf
     tell it via a cmd line option): hex byte values or an ASCII string (which
     it converts to hex byte values to do the search).  Can use bgverify or
     Yara (with a supplied rule file) to do the verification.
-  - bgsearch_old.py: older standalone multiprocessing based version of the
-    search wrapper code, a little simpler starting point, same functionality
-    (although it can only use bgverify for verification).
   - bgparse: the executable bgsearch calls that actually reads the indexes to
     do the candidate list for the files with N-grams of the byte values.
   - bgverify: a Boyer-Moore-Horspool fast string search based verification
     tool to make sure the full strings of byte values exist in the candidate
     files found by bgparse.  Good for simple verifications, but as mentioned
     above you can also use Yara instead (see bgsearch docs).
+  - bgextractfile: removes or replaces a file from an index.  This is useful
+    if files have been purged or moved but you don't want to re-index.
 
 ## Building
 
 A couple of minor notes about the code & building it:
 
-  - The code depends on Boost, POCO, and Python (2.6 or 2.7, untested with
-    3.x), and is known to build on various versions of RedHat, CentOS, and
-    Ubuntu Linux distros.  Docbook is needed to build the man pages.  You'll
-    probably need to hand edit the Makefile (and possibly some Python code,
-    and maybe the spec files if you are trying to build an RPM) for your setup
-    until we get around to making the build process and code a little more
-    generic & robust...  The Makefile defaults to looking for symlinks to
-    install dirs for POCO and Boost in the current directory by default, but
-    it should build against system installed versions fine.  The Boost
-    libraries on some distros have '-mt' suffixes and don't on others, so
-    BOOST_MT may have to be adjusted to account for that.  The Makefile is old
-    and ugly and definitely needs some TLC, sorry.
-  - Static executables can be built (see the STATIC and POCO_STATIC macros in
-    the Makefile), but we encountered issues with POCO and newer versions of
-    GCC and Linux distros where a coredump would occur during C++ static
-    object initialization, so YMMV there (seems to work in Ubuntu flavors but
-    not in RedHat flavored past RHEL5).  Note that the POCO library is only
-    used for the indexing code, and will probably be replaced eventually
-    (likely with Boost and/or standard C++ constructs).
-  - There are 2 python packages included in here that support the bgsearch.py
-    script: biggrep and jobdispatch.  The latter is part of another in house
-    package, stripped down to just what is needed for this script.
-    Installation of them needs to be done manually for the time being (likely
-    just a symlink into ~/.local/lib/python2*/site-packages/ should suffice,
-    or set PYTHONUSERBASE like in the example in the quickstart section
-    above).
-
+  - If installing from the tarball, you should not have to run ./autogen.sh.
+  ./configure; make; make install should configure, build, and install this
+  package.
+  - The code depends on Boost and Python (2.6 or 2.7, untested with
+    3.x), and is known to build on various versions of RedHat, CentOS, 
+    MAC OSX and Ubuntu Linux distros. 
+  - By default, the biggrep and jobdispatch python packages are installed in the 
+    site-packages directory returned by disutils.sysconfig get_python_lib(). You
+    can change this behavior by using --with-python-prefix{=DIR} to install
+    the Python modules under this prefix (location will be DIR/lib/python*/biggrep).
+    If DIR is not provided, it will use the value of PREFIX (--prefix).  
+  - If using a prefix when installing BigGrep, you may need to use
+    --with-python-prefix to install the required Python modules.
+  - If using --with-python-prefix you may need to set your PYTHONPATH environment
+    variable to the location where the biggrep python module was installed in order
+    to run bgsearch.
+  - Boost 1.48 is required. On RHEL6 you may be able to find this package in
+    the Software Collections Library, however, it may install in an alternative 
+    path. Try the following when linking against the boost148 package:
+    ./autogen.sh
+    LDFLAGS=-L/usr/lib64/boost148 LIBS="-lboost_system-mt -lboost_chrono-mt" ./configure BOOST_ROOT=/usr/include
+    make
+    make install
 
 ## Problems?
 
 Feel free to write an Issue for any problems you encounter.
 
+Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
 
-Copyright 2011-2016 Carnegie Mellon University.  See LICENSE file for terms.
-
-DM-0001480
+DM17-0473

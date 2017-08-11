@@ -1,4 +1,4 @@
-// Copyright 2011-2016 Carnegie Mellon University.  See LICENSE file for terms.
+// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
 
 #include <iostream>
 
@@ -64,7 +64,7 @@ main(int argc, char** argv)
   vector < uint32_t > testdata2 = {
     // and now for a bigger list, multiple blocks, w/ a special one in the middle:
     100,83,12,1,0,60,70,1,1,1,1,1,1,1,1,1024, // b == 7, & one exception
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     32,31,33,1,1,1,1,1,1,1,1,1,1,1,1,1 // b == 5 w/ one exception
   };
 
@@ -81,12 +81,12 @@ main(int argc, char** argv)
     dump_vector< uint32_t >(testdata1[i]);
     auto_ptr< vector< uint8_t > > encdataptr(pfor.encode(testdata1[i]));
     vector< uint8_t > &encdata(*encdataptr);
-    
+
     cout << "  - encoded to " << encdata.size() << " bytes, b == " << int(pfor.last_b) << ", execptions == " << int(pfor.last_exceptions) << ", special == " << pfor.last_special << endl;
     dump_byte_vector_as_bits(encdata);
     auto_ptr< vector< uint32_t > > decdataptr(pfor.decode(encdata));
     vector< uint32_t > &decdata(*decdataptr);
-    
+
     dump_vector< uint32_t >(decdata);
     if (equal(decdata.begin(),decdata.end(),testdata1[i].begin()))
     {
@@ -143,13 +143,13 @@ main(int argc, char** argv)
     //dump_vector< uint32_t >(randvector);
     auto_ptr< vector< uint8_t > > encdataptr(pfor.encode(randvector));
     vector< uint8_t > &encdata(*encdataptr);
-    
+
     cout << "  - encoded to " << encdata.size() << " bytes, b == " << int(pfor.last_b) << ", execptions == " << int(pfor.last_exceptions) << ", special == " << pfor.last_special << endl;
     total_compressed_size += encdata.size();
     //dump_byte_vector_as_bits(encdata);
     auto_ptr< vector< uint32_t > > decdataptr(pfor.decode(encdata));
     vector< uint32_t > &decdata(*decdataptr);
-    
+
     //dump_vector< uint32_t >(decdata);
     if (equal(decdata.begin(),decdata.end(),randvector.begin()))
     {

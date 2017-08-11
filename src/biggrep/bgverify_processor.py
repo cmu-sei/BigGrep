@@ -1,8 +1,8 @@
 # BigGrep
 #
-# @license:   GPL and Gov't Purpose, see LICENSE.txt for details
-# @copyright: 2013 by Carnegie Mellon University
-# @author:    Matt Coates <mc-contact@cert.org>
+# @license:   GPL and Govt't Purpose, see LICENSE.txt for details
+# @copyright: 2013-2017 by Carnegie Mellon University
+# @author:    Matt Coates <mc-help@cert.org>
 import jobdispatch
 import logging
 import bgsearch
@@ -18,7 +18,7 @@ class BgVerifyProcessor(jobdispatch.Processor):
         j=self._startJob()
         meta=dict(j.input)
         (vbsize,v_results,duration)=bgsearch.verify(j.terms,meta.keys(),logger,self.verbose,self.debug)
-        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='verifydone',terms=j.terms,result_tuples=[(f,meta[f]) for (f,_) in v_results],count=vbsize,duration=duration))
+        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='verifydone',terms=j.terms,result_tuples=[(f,meta[f]) for (f,_) in v_results],count=vbsize,duration=duration,num_files=0,input=j.input))
 
 class VerifyYaraProcessor(jobdispatch.Processor):
     def do(self):
@@ -31,4 +31,4 @@ class VerifyYaraProcessor(jobdispatch.Processor):
             m=meta[f]+",YARA_MATCHES="+metadata_string
             results.append((f,m))
 
-        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='verifydone',terms=j.terms,result_tuples=results,count=vbsize,duration=duration))
+        self._finishedJob(bgsearch_jobmanager.BgResultJob(state='verifydone',terms=j.terms,result_tuples=results,count=vbsize,duration=duration,num_files=0,input=j.input))

@@ -1,8 +1,8 @@
 # BigGrep
 #
-# @license:   GPL and Gov't Purpose, see LICENSE.txt for details
-# @copyright: 2013 by Carnegie Mellon University
-# @author:    Matt Coates <mc-contact@cert.org>
+# @license:   GPL and Govt't Purpose, see LICENSE.txt for details
+# @copyright: 2013-2017 by Carnegie Mellon University
+# @author:    Matt Coates <mc-help@cert.org>
 
 
 import logging
@@ -14,11 +14,11 @@ import collections
 logger = logging.getLogger(__name__)
 
 BgSearchJob = collections.namedtuple('BgSearchJob',['terms','input','duration'])
-BgResultJob = collections.namedtuple('BgResultJob',['state','terms','result_tuples','count','duration'])
+BgResultJob = collections.namedtuple('BgResultJob',['state','terms','result_tuples','count','duration', 'num_files', 'input'])
 
 class BgSearchJobManager(jobdispatch.JobManager):
     job_spec_key="bgsearch"
-    def __init__(self,candidate_limit=0,filter_criteria=None,verify=False):
+    def __init__(self,candidate_limit=0,filter_criteria=None,verify=False,metrics=False,dirs=None):
         self.sjobs=collections.deque()
         self.vjobs=collections.deque()
         self.completed_jobs = collections.deque()
@@ -34,7 +34,10 @@ class BgSearchJobManager(jobdispatch.JobManager):
         self.search_duration = 0.0
         self.verify_duration = 0.0
         self.verify_jobs = 0
-    
+        self.directories = dirs
+        self.metrics = metrics
+        self.metric_stats = {}
+
     def getJob(self,processor):
         if processor.job_spec[BgSearchJobManager.job_spec_key] == "search":
             try:
@@ -57,6 +60,19 @@ class BgSearchJobManager(jobdispatch.JobManager):
                 logger.debug("candidate_count > candidate_limit")
                 #ensure job processing stops
                 self.candidate_limit_reached = True
+            if self.metrics:
+                input = job.input
+                dir = ""
+                for d in self.directories:
+                    if re.match(d, input):
+                        dir = d
+                prev_index = 0
+                prev_files = 0
+                prev_candidates = 0
+                prev_dur = 0
+                if dir in self.metric_stats:
+                    (prev_index, prev_files, prev_candidates, prev_dur) = self.metric_stats[dir]
+                self.metric_stats[dir] = (prev_index + 1, prev_files + job.num_files, prev_candidates + len(job.result_tuples), prev_dur + job.duration)
 
             filtered_results = []
             for (f,m) in job.result_tuples:
@@ -70,13 +86,13 @@ class BgSearchJobManager(jobdispatch.JobManager):
                         logger.error("Malformed filter criteria supplied.")
                         exit(1)
                     if len(missing_keys) > 0:
-                        logger.warning("%s has no %s metadata and could not be filtered using that criteria."%(f,str(missing_keys))) 
+                        logger.warning("%s has no %s metadata and could not be filtered using that criteria."%(f,str(missing_keys)))
                         m+=",FILTER_MISSING_METADATA="+';'.join(missing_keys)
                 if filtered:
                     if self.verify and not self.candidate_limit_reached:
                         self.vjobs.append(BgSearchJob(terms=job.terms,input=[(f,m)],duration=0))
                     else:
-                        self.completed_jobs.append(BgResultJob(state='complete',terms=job.terms,result_tuples=[(f,m)],count=0,duration=0))
+                        self.completed_jobs.append(BgResultJob(state='complete',terms=job.terms,result_tuples=[(f,m)],count=0,duration=0,num_files=0,input=None))
                     self.candidate_count+=1
         if job.state == "verifydone":
             logger.debug("adding job to completed_jobs")

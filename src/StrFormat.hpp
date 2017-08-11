@@ -1,5 +1,4 @@
-// Copyright 2011-2016 Carnegie Mellon University.  See LICENSE file for terms.
-
+// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
 // simple std::string formatter function using vsnprintf, because I don't want
 // to use boost::format, Loki::SafeFormat, or fastformat just yet...
 
@@ -54,4 +53,3 @@ std::string StrFormat(const char* fmt, ...)
 
   return retstr;
 }
-

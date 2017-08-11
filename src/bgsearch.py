@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-# -*- python -*-
 
 # BigGrep
 #
 # @license:   GPL and Gov't Purpose, see LICENSE.txt for details
-# @copyright: 2011-2016 by Carnegie Mellon University
+# @copyright: 2011-2017 by Carnegie Mellon University
 # @author:    Charles Hines, Matt Coates <mc-contact@cert.org>
 
+# -*- python -*-
 # Note that the line above ("#!/usr/bin/env python2.6") is to ensure that in
 # our mixed environment (RHEL 5, RHEL 6, and Ubuntu x.y) that this script runs
 # on all of the choices (RHEL 5 being the problem where the default Python is
@@ -30,6 +30,7 @@ import os
 import fnmatch
 
 import logging
+import logging.handlers
 
 if __name__ == '__main__':
     ###########################################################################
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     #ch.setFormatter(formatter)
     #ch.setLevel(logging.DEBUG)
 
-    parser = optparse.OptionParser(usage="usage: %prog [options] term term term...",version="2.6")
+    parser = optparse.OptionParser(usage="usage: %prog [options] term term term...",version="2.7")
     parser.add_option('-a', '--ascii', action='append', type='string', default=[], 
                       help='ascii string search term')
     parser.add_option('-b', '--binary', action='append', type='string', default=[], 
@@ -98,6 +99,8 @@ if __name__ == '__main__':
     parser.add_option('-t', '--throttle', action='store', default=10000, type='int', help='throttle index parsing when this many candidates are buffered. (default %default)')
     parser.add_option('-V', '--verbose', action='store_true', default=False, help='verbose output')
     parser.add_option('-D', '--debug', action='store_true', default=False, help='diagnostic output')
+    parser.add_option('--syslog', action='store', type='string', help='log output to syslog, e.g. facility[@address]')
+    parser.add_option('--metrics', action='store_true', default=False, help='display per-directory timing metrics')
 
     cfg_options = []
     try:
@@ -128,6 +131,10 @@ if __name__ == '__main__':
     if options.banner:
         with open(options.banner) as f:
             sys.stderr.write(f.read()) 
+    if options.metrics:
+        # set proper logging level (show per-directory search metrics)
+        logger.setLevel(logging.WARNING)
+        jdlogger.setLevel(logging.WARNING)
     if options.verbose:
         # set proper logging level (overrides quiet, info & above)
         logger.setLevel(logging.INFO)
@@ -137,6 +144,24 @@ if __name__ == '__main__':
         logger.setLevel(logging.DEBUG)
         jdlogger.setLevel(logging.DEBUG)
 
+    if options.syslog:
+        # choices: local6, local6@localhost, local6@/dev/log, local6@foo:10514
+        # split into facility@address
+        if "@" in options.syslog:
+            fac, addr = options.syslog.split("@",1)
+        else:
+            fac = options.syslog
+            addr = "/dev/log"
+        if "/" not in addr:
+            if ":" in addr:
+                host,port = addr.split(":",1)
+                addr = (host,int(port))
+            else:
+                addr = (addr,514)
+        handler = logging.handlers.SysLogHandler(facility=fac, address=addr)
+        logger.addHandler(handler)
+        jdlogger.addHandler(handler)
+        
     if len(options.directory) < 1:
         logger.error("no directories specified")
         sys.exit(1)
@@ -217,7 +242,7 @@ if __name__ == '__main__':
             import biggrep.bgcelery
             ret=biggrep.bgcelery.search(searchterms,index_files,pr,biggrep.bgsearch.ps,options.verify,options.filter,options.limit)
         else:
-            ret=biggrep.bgsearch.search(searchterms,index_files,pr,biggrep.bgsearch.ps,options.verify,options.filter,options.numprocs,options.limit,options.verbose,options.debug,logger,options.yara,options.throttle)
+            ret=biggrep.bgsearch.search(searchterms,index_files,pr,biggrep.bgsearch.ps,options.verify,options.filter,options.numprocs,options.limit,options.verbose,options.debug,logger,options.yara,options.throttle,options.metrics,options.directory)
     except KeyboardInterrupt:
         sys.exit(1)
 

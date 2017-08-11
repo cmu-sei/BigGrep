@@ -1,0 +1,61 @@
+=pod
+
+=head1 NAME
+
+B<bgparse> - bgparse takes an index file and can perform various operations on it, depending on options picked.
+
+=head1 SYNOPSIS
+
+   bgparse [options] {IDXFILE.BGI}
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-s/--search> I<HEXSTR>
+
+Search for the candidate file ids for this ascii encoded binary string.
+(can have multiple -s options)
+
+=item B<-S/--stats>
+
+Dumps the distribution of file ids and info about PFOR/VarByte compression per n-gram.
+
+=item B<-V/--verbose>
+
+Show some additional info while working.
+
+=item B<-d/--debug>
+
+Show diagnostic information.
+
+=item B<-h/--help>
+
+Show this help message.
+
+=item B<-v/--version>
+
+Show version information
+
+=back
+
+=head1 EXAMPLES
+
+
+=head1 KNOWN ISSUES
+
+Bug reports and feature requests may be posted at
+E<lt>http://github.com/cmu-sei/BigGrep/issuesE<gt>
+
+=head1 AUTHORS
+
+Chuck Hines, Matt Coates
+
+E<lt>http://www.cert.org/E<gt>
+
+=head1 SEE ALSO
+
+B<bgsearch(1)>, B<bgindex(1)>, B<bgverify(1)>, B<bgextractfile(1)>, B<biggrep.conf(5)>
+
+=cut
+

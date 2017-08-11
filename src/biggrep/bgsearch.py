@@ -1,5 +1,5 @@
-# @license:   GPL and Gov't Purpose, see LICENSE.txt for details
-# @copyright: 2013 by Carnegie Mellon University
+# @license:   GPL and Govt't Purpose, see LICENSE.txt for details
+# @copyright: 2013-2017 by Carnegie Mellon University
 # @author:    Matt Coates <mc-contact@cert.org>
 
 import subprocess
@@ -10,7 +10,7 @@ import time
 import binascii
 import tempfile
 
-def search(search_terms,index_files,results_callback,status_callback,verify=False,filter_criteria=None,numprocs=12,limit=15000,verbose=False,debug=False,logger=False,yara_file=None,throttleat=10000):
+def search(search_terms,index_files,results_callback,status_callback,verify=False,filter_criteria=None,numprocs=12,limit=15000,verbose=False,debug=False,logger=False,yara_file=None,throttleat=10000,metrics=False,dirs=None):
     import jobdispatch
     from bgsearch_jobmanager import BgSearchJobManager
     from bgsearch_processor import BgSearchProcessor
@@ -33,14 +33,16 @@ def search(search_terms,index_files,results_callback,status_callback,verify=Fals
     # Don't enforce candidate limit if no verification is to be done.
     if not verify:
         limit = 0
-    sjm = BgSearchJobManager(limit,filter_criteria,verify)
+    sjm = BgSearchJobManager(limit,filter_criteria,verify,metrics,dirs)
     sjd = jobdispatch.JobDispatcher(sjm)
     #vjd = jobdispatch.JobDispatcher(vjm)
     sp = BgSearchProcessor(("bgsearch","search"))
     sp.verbose=verbose
     sp.debug=debug
+    sp.metrics=metrics
     vp.verbose=verbose
     vp.debug=debug
+    vp.metrics=metrics
     s_engines = []
     v_engines = []
     parsing_halted = False
@@ -54,7 +56,7 @@ def search(search_terms,index_files,results_callback,status_callback,verify=Fals
         s_engines[0].pause()
         if verify:
             v_engines[0].resume()
-        
+
 
     try:
         totaljobs = 0
@@ -65,7 +67,7 @@ def search(search_terms,index_files,results_callback,status_callback,verify=Fals
 
         sjd.start()
         enabled_verifiers = 1
-        
+
         while(sjm.working or (len(sjm.completed_jobs) > 0) or (sjm.searched_count != totaljobs) or (verify and sjm.candidate_count-sjm.verify_checked_count != 0)):
             # fetch a completed job, and process it
             job = sjm.getCompletedJob()
@@ -124,12 +126,16 @@ def search(search_terms,index_files,results_callback,status_callback,verify=Fals
         raise
 
     wall_clock = time.time() - search_starttime
-    logger.debug("bgsearch actual time %0.2f seconds looking for %s; threads spent %0.2f seconds searching, %0.2f seconds verifying"%(wall_clock, search_terms, sjm.search_duration, sjm.verify_duration))
+    if metrics:
+        for key in sjm.metric_stats:
+            (num_indexes, num_files, num_candidates, duration) = sjm.metric_stats[key]
+            logger.warning("bgsearch metrics: %s searched %d files in %d indexes in %0.3f seconds"%(key, num_files, num_indexes, duration))
+    logger.warning("bgsearch actual time %0.2f seconds looking for %s; threads spent %0.2f seconds searching, %0.2f seconds verifying"%(wall_clock, search_terms, sjm.search_duration, sjm.verify_duration))
     logger.debug("Asking jobdispatcher to stop.")
     sjd.live=False
     sys.stderr.write("\n")
     return ret
- 
+
 #def verify_only(search_terms,results_callback,status_callback,numprocs=12,verbose=False,debug=False,logger=False,yara_file=None):
 #    import jobdispatch
 #    from bgsearch_jobmanager import BgSearchJobManager
@@ -163,12 +169,12 @@ def search(search_terms,index_files,results_callback,status_callback,verify=Fals
 #
 #        sjd.start()
 #        verifiers = 0
-#        
+#
 #        while(sjm.working or (len(sjm.completed_jobs) > 0) or ( sjm.candidate_count-sjm.verify_checked_count != 0)):
 #
 #            line = sys.stdin.readline()
 #            sjm.addJob(search_terms,line.strip())
-#            
+#
 #            # fetch a completed job, and process it
 #            job = sjm.getCompletedJob()
 #            if job == None:
@@ -200,9 +206,9 @@ def search(search_terms,index_files,results_callback,status_callback,verify=Fals
 #    sjd.live=False
 #    sys.stderr.write("\n")
 #    return ret
- 
 
-def parse(searchterms,index_file,logger,debug=False,verbose=False):
+
+def parse(searchterms,index_file,logger,debug=False,verbose=False,metrics=False):
     #logger = search.get_logger()
     #if verbose:
     #    logger.setLevel(logging.INFO)
@@ -214,7 +220,7 @@ def parse(searchterms,index_file,logger,debug=False,verbose=False):
     cmd = [ "bgparse"]
     for s in searchterms:
         cmd += ['-s',s]
-    if debug and verbose:
+    if (debug and verbose) or metrics:
         cmd += ['-d']
     cmd += [index_file]
     logger.debug("executing: %s"%cmd)
@@ -243,17 +249,23 @@ def parse(searchterms,index_file,logger,debug=False,verbose=False):
             c_file = r.split(',')[0]
             c_metadata = r[len(c_file):] # rest of line
             results.append((c_file,c_metadata))
-    if debug and verbose:
-        # dump the stderr which will have logging info
-        for l in stderr.readlines():
-            l = l.rstrip()
+    num_files = 0
+    # dump the stderr which will have logging info
+    for l in stderr.readlines():
+        l = l.rstrip()
+        if debug and verbose:
             logger.debug("bgparse debug: %s"%l)
+        if metrics and "  num_files == " in l:
+            _,num_files = l.split(" == ",1)
+            num_files = int(num_files)
+            metrics = False   # don't look after finding it once
+            logger.debug("metrics debug: %d files found in %s\n"%(num_files,index_file))
     stdout.close()
     stderr.close()
     bsize = len(results)
     duration = time.time() - starttime
-    logger.debug("parse took %0.2f seconds to identify %d candidates"%(duration,bsize))
-    return index_file,results,duration
+    logger.debug("parsing %s took %0.3f seconds to identify %d candidates from %d files"%(index_file, duration, bsize, num_files))
+    return index_file,results,duration,num_files
 
 def verify(searchterms,check_these_files,logger,debug=False,verbose=False):
     #if verbose:
@@ -271,7 +283,7 @@ def verify(searchterms,check_these_files,logger,debug=False,verbose=False):
     #proc = subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,preexec_fn=init_worker)
     proc = subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True)
     sout,serr = proc.communicate('\n'.join(check_these_files))
-                 
+
     # sout will have "filename: matches" for all the hits:
     for l in sout.split('\n'):
         # last one can be blank:

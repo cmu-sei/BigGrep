@@ -1,0 +1,72 @@
+=pod
+
+=head1 NAME
+
+B<biggrep.conf> - Configuration file for bgsearch default options.
+
+=head1 DESCRIPTION
+
+biggrep.conf contains settings that override defaults for bgsearch.
+All long-form options for B<bgsearch(1)> are supported.
+This man page describes the most useful options for inclusion in this
+file.
+
+=head1 SYNTAX
+
+The general format of this file consists of key=value
+pairs. Only one key=value pair may be present on a line, and
+the value must be separated from the key by a '=' character.
+For keys that require no value, listing the key alone (without
+a '=' character) will set that value to true. All long-form
+options for B<bgsearch(1)> are supported.  Lines that begin
+with the character # indicate the beginning of a comment, which
+continues to the end of the line.  These comments are ignored.
+
+=over 4
+
+=item B<directory>=I<DIR>
+
+Directory to search for .bgi files.
+
+=item B<recursive>
+
+Recurse down the directories looking for .bgi files.
+
+=item B<no-metadata>
+
+Do not show metadata associated with each result, if available.
+
+=item B<verify>
+
+Invoke bgverify on candidate answers.
+
+=item B<limit>=I<NUM>
+
+Halt search and verify when the number of candidates exceeds NUM.
+
+=item B<numprocs>=I<NUM>
+
+Number of simultaneous .bgi files to search. (default 12)
+
+=item B<banner>=I<PATH>
+
+Path to a text file to display as a banner/MOTD.
+
+=back
+
+=head1 EXAMPLES
+
+directory=/data/biggrep/indexes
+banner=/etc/biggrep/usage-warning.txt
+
+=head1 AUTHORS
+
+Matt Coates
+
+E<lt>http://www.cert.org/E<gt>
+
+=head1 SEE ALSO                                                                             
+                                                                                            
+B<bgparse(1)>, B<bgindex(1)>, B<bgverify(1)>, B<bgextractfile(1)>, B<bgsearch(1)>
+                                                                                            
+=cut 

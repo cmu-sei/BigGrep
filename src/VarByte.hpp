@@ -1,5 +1,4 @@
-// Copyright 2011-2016 Carnegie Mellon University.  See LICENSE file for terms.
-
+// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
 // a class to handle a Variable Byte encoding scheme for various UInt types (uint32_t or uint64_t)
 // simple variable byte encoding, high bit set == more bytes follow, so:
 //   0 - 127 => 1 byte
@@ -124,4 +123,3 @@ private:
 
 
 #endif // __VARBYTE_HPP_INCLUDED___
-

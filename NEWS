@@ -1,0 +1,93 @@
+Version 2.7: 2017-08-15
+=========================
+
+Use autotools for build system
+
+Remove libpoco dependency
+
+New bgextractfile program to remove/replace files in an index
+
+New logging
+
+Add compression support to bgindex and decompression support to bgparse/bgdump.
+
+Add -O overflow option to work with the max unique ngram limit
+
+Add Boost lockfree queue option (available if Boost >= 1.53).
+
+Replace Docbook man pages with pod files.
+
+Version 2.6-1: 2015-08-13
+=========================
+
+User control over index file search queue order, user control over candidate throttle point
+
+Version 2.5-2: 204-10-10
+=========================
+
+Packaging change: RPM now enforces dependency on jobdispatch 0.0.3
+
+Version 2.5-1: 2014-09-18
+==========================
+
+Speed & memory consumption improvements for large candidate queries, and index generation.
+
+Metadata filtering bug fixes.
+
+Version 2.4-1: 2014-04-15
+==========================
+
+Yara matches now reported as metadata
+
+Terminating wildcard is now supported for metadata filtering
+
+Yara verification is much faster
+
+Usability improvements.
+
+Version 2.3-1: 2014-02-28
+==========================
+
+Added Yara verification
+
+Added metadata filtering
+
+Added configurable index hint table (new index format)
+
+Rejection during indexing of files that exceed an ngram threshold
+
+bgsearch can now read defaults from a configuration file
+
+Version 2.2-1: 2013-11-15
+==========================
+
+Rearchitect bgsearch to use Jobdispatch
+
+Greatly improved search/verification speed
+
+Version	2.1-2: 2013-10-29
+==========================
+
+Staticically linked release for RHEL 5
+
+Version	2.1-1: 2013-10-15
+==========================
+
+Numerous indexing-related bug fixes
+
+Build/package cleanup/repair
+
+Version	 2.0-3: 2013-06-24
+==========================
+
+Added MAN pages
+
+Renamed bgsearch.py to bgsearch
+
+Renamed bgindex_th to bgindex
+
+Version	2.0-1: 2013-01-22
+==========================
+
+Intial RPM Build, static binaries only
+

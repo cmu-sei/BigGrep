@@ -1,0 +1,55 @@
+=pod
+
+=head1 NAME
+
+B<bgverify> - Verify Biggrep search candidates.  bgverify takes a list of files on stdin, the result of a bgverify, and verifies that the STR patterns (binary hex values) are really present and not false positives.
+
+=head1 SYNOPSIS
+
+   bgverify [options] {STR}
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-o/--offsets>
+
+Show all hits w/ locations instead of just a pass/fail match answer.
+
+=item B<-V/--verbose>
+
+Show some additional info while working
+
+=item B<-D/--debug>
+
+Show diagnostic information
+
+=item B<-h/--help>
+
+Show this help message.
+
+=item B<-v/--version>
+
+Show version information
+
+=back
+
+=head1 EXAMPLES
+
+
+=head1 KNOWN ISSUES
+
+Bug reports and feature requests may be posted at
+E<lt>http://github.com/cmu-sei/BigGrep/issuesE<gt>
+
+=head1 AUTHORS
+
+Chuck Hines, Matt Coates
+
+E<lt>http://www.cert.org/E<gt>
+
+=head1 SEE ALSO
+
+B<bgsearch(1)>, B<bgparse(1)>, B<bgindex(1)>, B<bgextractfile(1)>, B<biggrep.conf(5)>
+
+=cut

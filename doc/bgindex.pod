@@ -1,0 +1,107 @@
+=pod
+
+=head1 NAME
+
+B<bgindex> - bgindex reads a list of files on stdin to process, produces an N-gram inverted index.
+
+=head1 SYNOPSIS
+
+    bgindex [options]
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-n/--ngram>  I<N>
+
+Define N for the N-gram (3 or 4, 3 is default)
+
+=item B<-H/--hint-type> I<N>
+
+Specify hint type (0-2, default 0 for n==4, 1 for n==3 )
+
+=item B<-b/--blocksize> I<SIZE>
+
+PFOR encoding blocksize. (multiple of 8, default 32)
+
+=item B<-e/--exceptions> I<NUM>
+
+PFOR encoding max exceptions per block. (default 2)
+
+=item B<-m/--minimum> I<NUM>
+
+PFOR encoding minimum number of entries to consider PFOR. (default 4)
+
+=item B<-M/--max-unique-ngrams> I<N>
+
+Maximum number of unique n-grams allowed per file.
+
+=item B<-p/--prefix> I<STR>
+
+A prefix for the index file(s) (directory and/or partial filename).
+
+=item B<-O/--overflow> I<FILE>
+
+Write filenames that surpass max-unique-ngram limit to the given I<FILE>.
+
+=item B<-S/--sthreads> I<NUM>
+
+Number of threads to use for shingling. (default 4)
+
+=item B<-C/--cthreads> I<NUM>
+
+Number of threads to use for compression. (default 5)
+
+=item B<-v/--verbose>
+
+Show some additional info while working.
+
+=item B<-L/--lock>
+
+Use the boost lockless queue implementation instead of the standard locking queue implementation. Available if Boost 1.53 or greater is installed.
+
+=item B<-l/--log> I<FILE>
+
+Log process and diagnostic information to the given file instead of stderr.
+
+=item B<-d/--debug>
+
+Show more diagnostic information.
+
+=item B<-t/--trace>
+
+Show WAY TOO MUCH diagnostics (if compiled in).
+
+=item B<-h/--help>
+
+Show help and exit.
+
+=item B<-V/--version>
+
+Report version and exit.
+
+=back
+
+=head1 EXAMPLES
+
+mkdir /tmp/bgi
+
+ls -1 /some/test/files/*.exe | bgindex -p /tmp/bgi/testidx1 -v
+
+ls -1 /some/more/test/files/*.exe | bgindex -p /tmp/bgi/testidx2 -v
+
+=head1 KNOWN ISSUES
+
+Bug reports and feature requests may be posted at 
+E<lt>http://github.com/cmu-sei/BigGrep/issuesE<gt>
+
+=head1 AUTHORS
+
+Chuck Hines, Matt Coates, Emily Sarneso
+E<lt>http://www.cert.org/E<gt>
+
+=head1 SEE ALSO
+
+B<bgsearch(1)>, B<bgparse(1)>, B<bgverify(1)>, B<bgextractfile(1)>, B<biggrep.conf(5)>
+
+=cut
