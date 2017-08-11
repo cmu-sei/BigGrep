@@ -126,10 +126,13 @@ A couple of minor notes about the code & building it:
   - Boost 1.48 is required. On RHEL6 you may be able to find this package in
     the Software Collections Library, however, it may install in an alternative 
     path. Try the following when linking against the boost148 package:
+
+    ```
     ./autogen.sh
     LDFLAGS=-L/usr/lib64/boost148 LIBS="-lboost_system-mt -lboost_chrono-mt" ./configure BOOST_ROOT=/usr/include
     make
     make install
+    ```
 
 ## Problems?
 
