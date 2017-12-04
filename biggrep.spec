@@ -4,7 +4,7 @@
 %define        __spec_install_post %{nil}
 %define          debug_package %{nil}
 %define        __os_install_post %{_dbpath}/brp-compress
-%define version 2.7
+%define version 2.7.1
 %define release 1
 
 Summary: CERT biggrep

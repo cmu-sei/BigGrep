@@ -187,12 +187,16 @@ public:
     ~bgCompressNotification() {}
 };
 
+
+class FileData;
+
 class bgShingleNotification {
 public:
     string     fname;
     uint32_t   id;
-    bgShingleNotification(string fname, uint32_t id)
-        : fname(fname), id(id) {}
+    FileData   *fd;
+    bgShingleNotification(string fname, uint32_t id, FileData *fd)
+        : fname(fname), id(id), fd(fd) {}
     ~bgShingleNotification() {}
 };
 
@@ -631,9 +635,10 @@ void bgShingle(
     off_t file_size(0);
     int f;
     unsigned char* fmem = NULL;
-    FileData *fd(new FileData(id));
+    //    FileData *fd(new FileData(id));
+    FileData *fd = note->fd;
 
-    fds.push_back(fd);
+    //fds.push_back(fd);
 
     BGDEBUG << format("Shingleing %s (id: %u, shingle "
                       "counter: %u)") % fname.c_str()
@@ -983,8 +988,9 @@ public:
             % (pfor_encoded ? "PFOR":"VarByte");
 
         // clean up a little
-        delete fids;
-
+        //delete fids;
+        delete cnote->fids;
+        delete cnote;
         // send compressed data pointer to write thread:
         bgWriteNotification *note = new bgWriteNotification(ngram_order, ngram,
                                                             cdataptr, uncsz,
@@ -1008,7 +1014,6 @@ public:
             while (compressQueue.pop(note)) {
                 bgCompress(note);
                 ++compress_counter;
-                delete note;
             }
         }
 
@@ -1018,7 +1023,6 @@ public:
         while (compressQueue.pop(note)) {
             bgCompress(note);
             ++compress_counter;
-            delete note;
 
             BGDEBUG <<format("CompressWorker compress counter == %u")
                 % (unsigned int)compress_counter;
@@ -1040,7 +1044,6 @@ public:
             if (note) {
                 bgCompress(note);
                 ++compress_counter;
-                delete note;
             }
         }
 
@@ -1052,7 +1055,6 @@ public:
         if (bgqueue.try_pop(note)) {
             bgCompress(note);
             ++compress_counter;
-            delete note;
 
             BGDEBUG <<format("CompressWorker compress counter == %u")
                 % (unsigned int)compress_counter;
@@ -1670,6 +1672,7 @@ uint32_t bgCompressAndWrite(
     }
 
     boost::thread *write_thread;
+
     WriteWorker *writer = new WriteWorker(&writeLockQueue);
     if (writer->error) {
         compressdone = true;
@@ -1679,6 +1682,7 @@ uint32_t bgCompressAndWrite(
         threadpool.join_all();
         exit(1);
     }
+
     write_thread = new boost::thread(boost::bind(&WriteWorker::run, writer));
 
     // LoserTree based merge here!
@@ -1692,7 +1696,6 @@ uint32_t bgCompressAndWrite(
     if (!lt->empty) {
         last_ngram = lt->root->peek_node_data().first;
     }
-
     BGDEBUG << format("Loser Tree first root ngram %08x") % last_ngram;
 
     uint32_t num_ngrams_processed(0);
@@ -1781,6 +1784,7 @@ uint32_t bgCompressAndWrite(
     }
     write_thread->join();
 
+    delete writer;
 
     return total_unique_ngrams;
 
@@ -1845,8 +1849,10 @@ int main(
         boost::split(fname_and_metadata,id_to_fname[i],boost::is_any_of(","));
         BGDEBUG << boost::format("file name '%s' metadata length: %d")
             % fname_and_metadata[0].c_str() % (fname_and_metadata.size()-1);
+        FileData *fd(new FileData(i));
+        fds.push_back(fd);
         bgShingleNotification *snote = new bgShingleNotification(
-            fname_and_metadata[0], i);
+            fname_and_metadata[0], i, fd);
         if (run_lock_free) {
 #if BG_BOOST_LOCKLESS
             shingleQueue.push(snote);
@@ -1877,9 +1883,7 @@ int main(
     }
 
     uint32_t newid;
-
     for (int i(0); i < numfiles; i++) {
-
         if (fds[i]->missing ) {
             missing_files++;
             id_to_fname[i]="";
@@ -1894,7 +1898,6 @@ int main(
             }
         }
     }
-
 
     total_files = numfiles - (missing_files + max_ngram_files);
 
@@ -1939,6 +1942,10 @@ int main(
 
     BGWARN << format("DONE! Total runtime %f sec (%f min), estimated RSS size %f GB")
         % total_time % (total_time/60.0) % get_mem_usage();
+
+    for (int i(0); i < numfiles; i++) {
+        delete fds[i];
+    }
 
     return 0;
 

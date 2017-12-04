@@ -12,7 +12,7 @@ dnl ------------------------------------------------------------------------
 
 
 AC_PREREQ(2.59)
-AC_INIT([biggrep], [2.7], [https://github.com/cmu-sei/BigGrep/issues],[biggrep])
+AC_INIT([biggrep], [2.7.1], [https://github.com/cmu-sei/BigGrep/issues],[biggrep])
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_HEADERS(src/bgconfig.h)
 AC_COPYRIGHT([Copyright (C) 2011-2017 by Carnegie Mellon University
