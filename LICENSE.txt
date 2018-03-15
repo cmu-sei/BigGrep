@@ -1,6 +1,6 @@
 BigGrep
 
-Copyright 2017 Carnegie Mellon University. All Rights Reserved.
+Copyright 2017-2018 Carnegie Mellon University. All Rights Reserved.
 
 GNU GPL 2.0
 

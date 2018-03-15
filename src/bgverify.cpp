@@ -1,4 +1,4 @@
-// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
+// Copyright 2011-2018 Carnegie Mellon University.  See LICENSE file for terms.
 // BigGrep, bgverify: uses a C++ implementation of Boyer-Moore-Horspool fast
 // string searching to do a "binary grep" to do a simplistic verification of
 // potential matches from bgsearch
@@ -78,7 +78,7 @@ BMH::find(unsigned char *txt, int len, bool onlyone)
 void version() {
 
     std::cerr << "bgverify version " << VERSION << std::endl;
-    std::cerr << "(c) 2011-2017 Carnegie Mellon University " << std::endl;
+    std::cerr << "(c) 2011-2018 Carnegie Mellon University " << std::endl;
     std::cerr << "Government Purpose License Rights (GPLR) pursuant to "
         "DFARS 252.227-7013" << std::endl;
     std::cerr << "Post issues to https://github.com/cmu-sei/BigGrep" <<

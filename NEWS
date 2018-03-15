@@ -1,5 +1,10 @@
-Version 2.7.1: 2017-12-04
+Version 2.7.2: 2018-03-15
 ==========================
+
+Bug fix for Clang compilers
+
+Version 2.7.1: 2017-12-04
+===========================
 
 bgindex bug fix
 

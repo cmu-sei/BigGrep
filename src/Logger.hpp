@@ -20,6 +20,12 @@
 //     LERROR << "Danger Will Robinson" << LEND;
 //     LCRITICAL << "This message will self destruct..." << std::endl;
 //
+//   If you need to exclude some more extensive processing than what can be
+//   placed in a single line stream operation like above, there are some
+//   helper macros for that too:
+//     if (LISDEBUG) { ... }
+//     if (LISLOGLEVEL(Logger.INFO)) { ... }
+//
 //   Default behavior can be controlled via some env vars (useful for
 //   integration into new code that doesn't do cmd line processing).
 //   Specifically LOGGER_LEVEL can be set to set the default log level either
@@ -30,6 +36,10 @@
 //   would enable ALL logging (LTRACE on up) for anything in foo.cpp, and
 //   LDEBUG and above for anything in bar.cpp.  It uses the Boost Tokenizer
 //   code for parsing the environment variable.
+//
+//   There's a LOGGER_TIMESTAMP env var too, to make that go away by setting
+//   it to an empty string (for automated unit test comparisons, for example)
+//   or change the format from the default for some other reason.
 //
 //   Now relies on Boost Thread library for limited thread safety.  Still can
 //   get garbled output though, since stream usage isn't really thread safe...
@@ -391,12 +401,15 @@ private:
 // the else parameter too to work, not void like I have here, and since log
 // returns a std::ostream&, that's probably not going to work either, so I'll
 // just stick with the empty expression for now:
-#define LNOOP
+//#define LNOOP
 //#define LNOOP (void)0
 //#define LNOOP [](){}()
 
-#define LOG(level) (level < Logger::logger()->getLoggerLevel(__FILE__,__LINE__)) ? LNOOP : Logger::logger()->log(level)
-#define LOGcnt(level) (level < Logger::logger()->getLoggerLevel(__FILE__,__LINE__)) ? LNOOP : Logger::logger()->log(level,false)
+//#define LOG(level) (level < Logger::logger()->getLoggerLevel(__FILE__,__LINE__)) ? LNOOP : Logger::logger()->log(level)
+//#define LOGcnt(level) (level < Logger::logger()->getLoggerLevel(__FILE__,__LINE__)) ? LNOOP : Logger::logger()->log(level,false)
+// actually, short circuits might work out for this:
+#define LOG(level) (level >= Logger::logger()->getLoggerLevel(__FILE__,__LINE__)) && Logger::logger()->log(level)
+#define LOGcnt(level) (level >= Logger::logger()->getLoggerLevel(__FILE__,__LINE__)) && Logger::logger()->log(level,false)
 
 #endif // 0
 

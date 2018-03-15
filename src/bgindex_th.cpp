@@ -1,4 +1,4 @@
-// Copyright 2011-2017 Carnegie Mellon University.  See LICENSE file for terms.
+// Copyright 2011-2018 Carnegie Mellon University.  See LICENSE file for terms.
 #define __STDC_LIMIT_MACROS // I have to define this to get UINT32_MAX because of the ISO C99 standard, apparently
 // #define __STDC_CONSTANT_MACROS // don't really need these right now
 #include <stdint.h>
@@ -748,7 +748,9 @@ void bgShingle(
             fd->hit_ngram_limit = true;
             //lt->nodes[id].fd = NULL;
             if (overflow) {
-                fputs(fname.c_str(),overflow);
+              /* add metadata to output string */
+              //fputs(fname.c_str(),overflow);
+                fputs(id_to_fname[id].c_str(), overflow);
                 fputs("\n",overflow);
             }
         } else {
@@ -763,7 +765,7 @@ void bgShingle(
                              " took %f sec") % fname.c_str() %
                 int(id) % unique_ngrams %
                 ngram_size % int(ngram_count) %
-                stimer.secondsFromStart();
+              stimer.secondsFromStart();
         }
 
     }
@@ -1397,7 +1399,7 @@ void version()
 {
 
     std::cerr << "bgindex version " << VERSION << std::endl;
-    std::cerr << "(c) 2011-2017 Carnegie Mellon University " << std::endl;
+    std::cerr << "(c) 2011-2018 Carnegie Mellon University " << std::endl;
     std::cerr << "Government Purpose License Rights (GPLR) pursuant to "
         "DFARS 252.227-7013" << std::endl;
     std::cerr << "Post issues to https://github.com/cmu-sei/BigGrep" << std::endl;
